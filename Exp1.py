@@ -53,8 +53,8 @@ for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber 
         r,csi,vsi,used = Explication_study(explainer_default,i,d,4000,"euclidean",classifier, X_test)
         R_array[i]=r #guardamos los datos en los array
         CSI_array[i]=csi
-    Eu_array_r_means[k] = R_array.mean
-    Eu_array_csi_means[k] = CSI_array.mean
+    Eu_array_r_means[seed] = R_array.mean
+    Eu_array_csi_means[seed] = CSI_array.mean
     #Manhattan calculations with default kw
     R_array = np.zeros(n) 
     CSI_array = np.zeros(n)
@@ -62,8 +62,8 @@ for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber 
         r,csi,vsi,used = Explication_study(explainer_default,i,d,4000,"manhattan",classifier, X_test)
         R_array[i]=r
         CSI_array[i]=csi
-    Man_array_r_means[k]=R_array.mean
-    Man_array_csi_means[k] = CSI_array.mean
+    Man_array_r_means[seed]=R_array.mean
+    Man_array_csi_means[seed] = CSI_array.mean
     #Manhattan calculations with custom kw
     R_array = np.zeros(n) 
     CSI_array = np.zeros(n)
@@ -71,8 +71,8 @@ for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber 
         r,csi,vsi,used = Explication_study(explainer_custom,i,d,4000,"manhattan",classifier, X_test) #custom explainer
         R_array[i]=r
         CSI_array[i]=csi
-    Man_array_r_means_custom[k]=R_array.mean
-    Man_array_csi_means_custom[k] = CSI_array.mean
+    Man_array_r_means_custom[seed]=R_array.mean
+    Man_array_csi_means_custom[seed] = CSI_array.mean
     
   Eu_data_r.append(Eu_array_r_means) #Añadimos a la lista el array con las medias de los 10 experimentos
   Eu_data_csi.append(Eu_array_csi_means)
@@ -90,5 +90,4 @@ Man_data_custom.append(Man_data_csi_custom)
 
 
 Plot_data(Eu_data,Man_data,min_dimension,max_dimension,step,Eu_data,Man_data) #graficamos 
-
 
