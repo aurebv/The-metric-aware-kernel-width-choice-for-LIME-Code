@@ -35,14 +35,14 @@ def Plot_data(euclidean_data,manhattan_data,manhattan_data_custom,min_dim=5,max_
   man_CSI_custom = np.zeros(l)
   
   for i in range(l):
-    eu_R[i] = euclidean_data[0][l].mean
-    eu_CSI[i] = euclidean_data[1][l].mean
+    eu_R[i] = np.mean(euclidean_data[0][l])
+    eu_CSI[i] = np.mean(euclidean_data[1][l])
 
-    man_R[i] = manhattan_data[0][l].mean
-    man_CSI[i] = manhattan_data[1][l].mean
+    man_R[i] = np.mean(manhattan_data[0][l])
+    man_CSI[i] = np.mean(manhattan_data[1][l])
 
-    man_R_custom[i] = manhattan_data_custom[0][l].mean
-    man_CSI_custom[1] = manhattan_data_custom[1][l].mean
+    man_R_custom[i] = np.mean(manhattan_data_custom[0][l])
+    man_CSI_custom[1] = np.mean(manhattan_data_custom[1][l])
    
   
 
