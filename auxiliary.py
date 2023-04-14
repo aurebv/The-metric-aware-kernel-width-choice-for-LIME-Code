@@ -2,16 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 
-def Plot_data(euclidean_data,manhattan_data,similarity_data,min_dim,max_dim,step_dim):
+def Plot_data(euclidean_data,manhattan_data,manhattan_data_custom,min_dim=5,max_dim=40,step_dim=5):
   """
     Parameters
     ----------
-    euclidean_data : List of 3 dimensional arrays
-        euclidean_data[i] stores the mean R^2, CSI, VSI over all the test set for dimensionality = min_dim+step*i using Euclidean distance.
-    manhattan_data : List of 3 dimensional arrays
-        manhattan_data[i] stores the mean R^2, CSI, VSI over all the test set for dimensionality = min_dim+step*i using Manhattan distance.
-    similarity_data: float list
-        similarity_data[i] stores the mean similarity measure over all the test set for dimensionality = min_dim+step*i.
+    euclidean_data : 
+        
+    manhattan_data : 
+        
     min_dim : Int
         Minimum dimensionality for the data set generation.
     max_dim : Int
@@ -24,23 +22,29 @@ def Plot_data(euclidean_data,manhattan_data,similarity_data,min_dim,max_dim,step
     Graphics of each measure R^2, CSI, VSI and similarity over dimensionality.
 
     """
-  l = len(euclidean_data)
+  
   dimensiones = np.arange(min_dim,max_dim,step_dim)
+  l = len(dimensiones)
   eu_R = np.zeros(l)
   eu_CSI = np.zeros(l)
-  eu_VSI = np.zeros(l)
+
   man_R = np.zeros(l)
   man_CSI = np.zeros(l)
-  man_VSI = np.zeros(l)
-  similitud = np.zeros(l)
+
+  man_R_custom = np.zeros(l)
+  man_CSI_custom = np.zeros(l)
+  
   for i in range(l):
-    eu_R[i] = euclidean_data[i][0]
-    eu_CSI[i] = euclidean_data[i][1]
-    eu_VSI[i] = euclidean_data[i][2]
-    man_R[i] = manhattan_data[i][0]
-    man_CSI[i] = manhattan_data[i][1]
-    man_VSI[i] = manhattan_data[i][2]
-    similitud[i] = similarity_data[i]
+    eu_R[i] = euclidean_data[0][l].mean
+    eu_CSI[i] = euclidean_data[1][l].mean
+
+    man_R[i] = manhattan_data[0][l].mean
+    man_CSI[i] = manhattan_data[1][l].mean
+
+    man_R_custom[i] = manhattan_data_custom[0][l].mean
+    man_CSI_custom[1] = manhattan_data_custom[1][l].mean
+   
+  
 
 
   #Graficamos 
@@ -49,24 +53,38 @@ def Plot_data(euclidean_data,manhattan_data,similarity_data,min_dim,max_dim,step
 
   ax[0,0].plot(dimensiones, eu_R, color='r', label='euclidean')
   ax[0,0].plot(dimensiones, man_R, color='g', label='manhattan')
+  ax[0,0].plot(dimensiones,man_R_custom, color='b',label='manhattan_custom_kw')
   ax[0,0].set_title('R^2: Euclidean vs Manhattan')
   ax[0,0].legend()
 
   ax[0,1].plot(dimensiones, eu_CSI, color='r', label='euclidean')
   ax[0,1].plot(dimensiones, man_CSI, color='g', label='manhattan')
+  ax[0,1].plot(dimensiones,man_CSI_custom, color='b',label='manhattan_custom_kw')
   ax[0,1].set_title('CSI: Euclidean vs Manhattan')
   ax[0,1].legend()
 
-  ax[1,0].plot(dimensiones, eu_VSI, color='r', label='euclidean')
-  ax[1,0].plot(dimensiones, man_VSI, color='g', label='manhattan')
-  ax[1,0].set_title('VSI: Euclidean vs Manhattan')
-  ax[1,0].legend()
+  eu_r_boxplot=ax[1,0].boxplot(euclidean_data[0],patch_artist=True,labels=dimensiones)
+  man_r_boxplot=ax[1,0].boxplot(manhattan_data[0],patch_artist=True,labels=dimensiones)
+  man_r_custom_boxplot=ax[1,0].boxplot(manhattan_data_custom[0],patch_artist=True,labels=dimensiones)
+  
+  colors = ['red', 'green', 'blue']
+  for bplot in (eu_r_boxplot, man_r_boxplot, man_r_custom_boxplot):
+    for patch, color in zip(bplot['boxes'], colors):
+        patch.set_facecolor(color)
 
-  ax[1,1].plot(dimensiones, similitud, color='b')
-  ax[1,1].set_title('Similarity Euclidean-Manhattan')
-  ax[1,1].legend()
-
+  eu_csi_boxplot=ax[1,0].boxplot(euclidean_data[1],patch_artist=True,labels=dimensiones)
+  man_csi_boxplot=ax[1,0].boxplot(manhattan_data[1],patch_artist=True,labels=dimensiones)
+  man_csi_custom_boxplot=ax[1,0].boxplot(manhattan_data_custom[1],patch_artist=True,labels=dimensiones)
+  
+  colors = ['red', 'green', 'blue']
+  for bplot in (eu_csi_boxplot, man_csi_boxplot, man_csi_custom_boxplot):
+    for patch, color in zip(bplot['boxes'], colors):
+        patch.set_facecolor(color)
+  
+  
   plt.show()
+
+  
 
 
 def Explication_study(expl,instance,num_features,num_samples,distance,classifier, X_test):
@@ -110,27 +128,3 @@ def Explication_study(expl,instance,num_features,num_samples,distance,classifier
                                           distance_metric=distance,n_calls = 10)
     return exp.score,csi,vsi,used_features
 
-
-def get_S(used_features_eu,used_features_man,dimension):
-  """
-    Parameters
-    ----------
-    used_features_eu: Array
-        Contains the attributes used for the explanation when using Euclidean distance.
-    used_features_man: Array
-        Contains the attributes used for the explanation when using Manhattan distance.
-    dimension: Int
-        Data set dimension. 
-
-    Returns
-    -------
-    S : Float
-        Similarity measure. 
-
-    """
-  count = 0
-  for f in used_features_eu:
-    if f in used_features_man:
-      count = count+1
-  S = count*2/dimension
-  return S

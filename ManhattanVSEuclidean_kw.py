@@ -43,7 +43,7 @@ for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber 
   CSI_array = np.zeros(n)
   VSI_array = np.zeros(n)
   for i in range(n): #Repetimos el proceso con manhattan
-    r,csi,vsi = Explication_study(i,d,4000,"manhattan",explainer,classifier, X_test)
+    r,csi,vsi = Explication_study(explainer,i,d,4000,"manhattan",explainer,classifier, X_test)
     R_array[i]=r
     CSI_array[i]=csi
     VSI_array[i]=vsi
