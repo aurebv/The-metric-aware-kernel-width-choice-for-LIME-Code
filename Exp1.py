@@ -28,7 +28,15 @@ Man_data_r = []
 Man_data_csi =[]
 Man_data_r_custom = []
 Man_data_csi_custom = []
-#En Eu_data_r[i] se almacena un array con las 10 medias del R^2 sobre el test_set de k data sets diferentes con dimension min_dim+i*step
+#En Eu_data_r[i] se almacena un array con las k medias del R^2 sobre el test_set de k data sets diferentes con dimension min_dim+i*step
+
+Eu_data_r_var=[] 
+Eu_data_csi_var=[]
+Man_data_r_var=[]
+Man_data_csi_var=[]
+Man_data_r_var_custom=[]
+Man_data_csi_var_custom=[]
+#En Eu_data_r_var[i] se guarda un array con las k varianzas del r^2 sobre el test_set 
 
 for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber en el dataset
   Eu_array_r_means = np.zeros(k) #Son los arrays que despues guardamos en las listas
@@ -37,6 +45,13 @@ for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber 
   Man_array_csi_means = np.zeros(k)
   Man_array_r_means_custom = np.zeros(k)
   Man_array_csi_means_custom = np.zeros(k)
+
+  Eu_array_r_vars = np.zeros(k) #Son los arrays que despues guardamos en las listas
+  Eu_array_csi_vars = np.zeros(k)
+  Man_array_r_vars = np.zeros(k)
+  Man_array_csi_vars = np.zeros(k)
+  Man_array_r_vars_custom = np.zeros(k)
+  Man_array_csi_vars_custom = np.zeros(k)
   for seed in range(k):
     random.seed(seed)
     X, y = make_classification(n_samples=500, n_features=d, n_informative = d, n_redundant = 0, n_classes=2, n_clusters_per_class=1, random_state=seed)
@@ -53,8 +68,10 @@ for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber 
         r,csi,vsi,used = Explication_study(explainer_default,i,d,4000,"euclidean",classifier, X_test)
         R_array[i]=r #guardamos los datos en los array
         CSI_array[i]=csi
-    Eu_array_r_means[seed] = R_array.mean
-    Eu_array_csi_means[seed] = CSI_array.mean
+    Eu_array_r_means[seed] = np.mean(R_array)
+    Eu_array_csi_means[seed] = np.mean(CSI_array)
+    Eu_array_r_vars[seed] = np.var(R_array)
+    Eu_array_csi_vars[seed] = np.var(CSI_array)
     #Manhattan calculations with default kw
     R_array = np.zeros(n) 
     CSI_array = np.zeros(n)
@@ -62,8 +79,10 @@ for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber 
         r,csi,vsi,used = Explication_study(explainer_default,i,d,4000,"manhattan",classifier, X_test)
         R_array[i]=r
         CSI_array[i]=csi
-    Man_array_r_means[seed]=R_array.mean
-    Man_array_csi_means[seed] = CSI_array.mean
+    Man_array_r_means[seed]=np.mean(R_array)
+    Man_array_csi_means[seed] = np.array(CSI_array)
+    Man_array_r_vars[seed]=np.var(R_array)
+    Man_array_csi_vars[seed] = np.var(CSI_array)
     #Manhattan calculations with custom kw
     R_array = np.zeros(n) 
     CSI_array = np.zeros(n)
@@ -71,23 +90,47 @@ for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber 
         r,csi,vsi,used = Explication_study(explainer_custom,i,d,4000,"manhattan",classifier, X_test) #custom explainer
         R_array[i]=r
         CSI_array[i]=csi
-    Man_array_r_means_custom[seed]=R_array.mean
-    Man_array_csi_means_custom[seed] = CSI_array.mean
+    Man_array_r_means_custom[seed]=np.mean(R_array)
+    Man_array_csi_means_custom[seed] = np.mean(CSI_array)
+    Man_array_r_vars_custom[seed]=np.var(R_array)
+    Man_array_csi_vars_custom[seed] = np.var(CSI_array)
     
   Eu_data_r.append(Eu_array_r_means) #Añadimos a la lista el array con las medias de los 10 experimentos
   Eu_data_csi.append(Eu_array_csi_means)
   Man_data_r.append(Man_array_r_means)
-  Man_data_csi.append(Eu_array_csi_means)
+  Man_data_csi.append(Man_array_csi_means)
   Man_data_r_custom.append(Man_array_r_means_custom)
   Man_data_csi_custom.append(Man_array_csi_means_custom)
+
+  Eu_data_r_var.append(Eu_array_r_vars) #Añadimos a la lista el array con las medias de los 10 experimentos
+  Eu_data_csi_var.append(Eu_array_csi_vars)
+  Man_data_r_var.append(Man_array_r_vars)
+  Man_data_csi_var.append(Man_array_csi_vars)
+  Man_data_r_var_custom.append(Man_array_r_vars_custom)
+  Man_data_csi_var_custom.append(Man_array_csi_vars_custom)
   print(d)
-Eu_data.append(Eu_data_r)
+Eu_data.append(Eu_data_r) #estas asignaciones son para pasar menos argumentos a plot
 Eu_data.append(Eu_data_csi)
 Man_data.append(Man_data_r)
 Man_data.append(Man_data_csi)
 Man_data_custom.append(Man_data_r_custom)
 Man_data_custom.append(Man_data_csi_custom)
 
+#guardamos los datos
+np.savetxt('Euclidean_data_r.txt',Eu_data_r)
+np.savetxt('Euclidean_data_csi.txt',Eu_data_csi)
+np.savetxt('Manhattan_data_r.txt',Man_data_r)
+np.savetxt('Manhattan_data_csi.txt',Man_data_csi)
+np.savetxt('Manhattan_data_r_custom.txt',Man_data_r_custom)
+np.savetxt('Manhattan_data_csi_custom.txt',Man_data_csi_custom)
 
-Plot_data(Eu_data,Man_data,min_dimension,max_dimension,step,Eu_data,Man_data) #graficamos 
+np.savetxt('Euclidean_data_r_var.txt',Eu_data_r_var)
+np.savetxt('Euclidean_data_csi_var.txt',Eu_data_csi_var)
+np.savetxt('Manhattan_data_r_var.txt',Man_data_r_var)
+np.savetxt('Manhattan_data_csi_var.txt',Man_data_csi_var)
+np.savetxt('Manhattan_data_r_custom_var.txt',Man_data_r_var_custom)
+np.savetxt('Manhattan_data_csi_custom_var.txt',Man_data_csi_var_custom)
+
+
+Plot_data(Eu_data,Man_data,Man_data_custom,min_dimension,max_dimension,step) #graficamos 
 

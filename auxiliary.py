@@ -35,14 +35,14 @@ def Plot_data(euclidean_data,manhattan_data,manhattan_data_custom,min_dim=5,max_
   man_CSI_custom = np.zeros(l)
   
   for i in range(l):
-    eu_R[i] = np.mean(euclidean_data[0][l])
-    eu_CSI[i] = np.mean(euclidean_data[1][l])
+    eu_R[i] = np.mean(euclidean_data[0][i])
+    eu_CSI[i] = np.mean(euclidean_data[1][i])
 
-    man_R[i] = np.mean(manhattan_data[0][l])
-    man_CSI[i] = np.mean(manhattan_data[1][l])
+    man_R[i] = np.mean(manhattan_data[0][i])
+    man_CSI[i] = np.mean(manhattan_data[1][i])
 
-    man_R_custom[i] = np.mean(manhattan_data_custom[0][l])
-    man_CSI_custom[1] = np.mean(manhattan_data_custom[1][l])
+    man_R_custom[i] = np.mean(manhattan_data_custom[0][i])
+    man_CSI_custom[i] = np.mean(manhattan_data_custom[1][i])
    
   
 
@@ -63,18 +63,20 @@ def Plot_data(euclidean_data,manhattan_data,manhattan_data_custom,min_dim=5,max_
   ax[0,1].set_title('CSI: Euclidean vs Manhattan')
   ax[0,1].legend()
 
-  eu_r_boxplot=ax[1,0].boxplot(euclidean_data[0],patch_artist=True,labels=dimensiones)
-  man_r_boxplot=ax[1,0].boxplot(manhattan_data[0],patch_artist=True,labels=dimensiones)
-  man_r_custom_boxplot=ax[1,0].boxplot(manhattan_data_custom[0],patch_artist=True,labels=dimensiones)
+  eu_r_boxplot=ax[1,0].boxplot(euclidean_data[0],patch_artist=True)
+  man_r_boxplot=ax[1,0].boxplot(manhattan_data[0],patch_artist=True)
+  man_r_custom_boxplot=ax[1,0].boxplot(manhattan_data_custom[0],patch_artist=True)
   
+
+  #La coloracion de los boxplot esta mal 
   colors = ['red', 'green', 'blue']
   for bplot in (eu_r_boxplot, man_r_boxplot, man_r_custom_boxplot):
     for patch, color in zip(bplot['boxes'], colors):
         patch.set_facecolor(color)
 
-  eu_csi_boxplot=ax[1,0].boxplot(euclidean_data[1],patch_artist=True,labels=dimensiones)
-  man_csi_boxplot=ax[1,0].boxplot(manhattan_data[1],patch_artist=True,labels=dimensiones)
-  man_csi_custom_boxplot=ax[1,0].boxplot(manhattan_data_custom[1],patch_artist=True,labels=dimensiones)
+  eu_csi_boxplot=ax[1,1].boxplot(euclidean_data[1],patch_artist=True)
+  man_csi_boxplot=ax[1,1].boxplot(manhattan_data[1],patch_artist=True)
+  man_csi_custom_boxplot=ax[1,1].boxplot(manhattan_data_custom[1],patch_artist=True)
   
   colors = ['red', 'green', 'blue']
   for bplot in (eu_csi_boxplot, man_csi_boxplot, man_csi_custom_boxplot):
