@@ -80,7 +80,7 @@ for d in range(min_dimension,max_dimension,step): #Cuantos atributos va a haber 
         R_array[i]=r
         CSI_array[i]=csi
     Man_array_r_means[seed]=np.mean(R_array)
-    Man_array_csi_means[seed] = np.array(CSI_array)
+    Man_array_csi_means[seed] = np.mean(CSI_array)
     Man_array_r_vars[seed]=np.var(R_array)
     Man_array_csi_vars[seed] = np.var(CSI_array)
     #Manhattan calculations with custom kw
